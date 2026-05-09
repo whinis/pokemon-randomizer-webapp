@@ -91,7 +91,7 @@ def identify_game(filepath):
     
     return None, None, None
 
-roms = []
+roms = ["Select a Rom"]
 @app.route('/')
 def index():
     return render_template('index.html',roms=roms)

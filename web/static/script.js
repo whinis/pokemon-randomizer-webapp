@@ -50,6 +50,9 @@ document.addEventListener("DOMContentLoaded", function () {
     let type = ""
     let filename = ""
     if(e.target.id.includes("select")){
+      if(!e.target.selectedOptions[0].value.toLowerCase().includes("pokemon")){
+        return;
+      }
       file = e.target.selectedOptions[0].value;
       type = "select"
     }else {
@@ -146,6 +149,7 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("error-message").classList.remove("hidden");
       console.error(err);
       document.getElementById("romfile").value = "";
+      document.getElementById("romfileselect").value = "Select a Rom"
     }
   }
   const romfileInput = document.getElementById("romfile");
