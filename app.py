@@ -32,7 +32,7 @@ GAME_PRESETS = {
     "BPGE": ("FRLG", "LeafGreen", ["Standard", "Ultimate", "Kaizo", "Survival", "SuperKaizo"]),
     "AXVE": ("RSE", "Ruby", ["Standard", "Ultimate", "Kaizo", "Survival", "SuperKaizo"]),
     "AXPE": ("RSE", "Sapphire", ["Standard", "Ultimate", "Kaizo", "Survival", "SuperKaizo"]),
-    "BPEE": ("RSE", "Emerald", ["Standard", "Ultimate", "Kaizo", "Survival", "SuperKaizo"]),
+    "BPEE": ("RSE", "Emerald", ["Thor","Standard", "Ultimate", "Kaizo", "Survival", "SuperKaizo"]),
     # NDS Games
     "CPUE": ("DPP", "Diamond", ["Standard", "Ultimate", "Kaizo", "Survival", "SuperKaizo"]),
     "CPUJ": ("DPP", "Pearl", ["Standard", "Ultimate", "Kaizo", "Survival", "SuperKaizo"]),
