@@ -46,10 +46,24 @@ document.addEventListener("DOMContentLoaded", function () {
   async function check_file(e)
   {
     resetForm();
-    const file = e.target.files[0];
-    if (!file) return;
+    let file = ""
+    let type = ""
+    let filename = ""
+    if(e.target.id.includes("select")){
+      file = e.target.selectedOptions[0].value;
+      type = "select"
+    }else {
+      file = e.target.files[0];
+      type = "file"
 
-    const filename = file.name.toLowerCase();
+    }
+    if (!file) return;
+    if( type ==="select") {
+      filename = file.split("/").pop()
+    }else{
+      filename = file.name.toLowerCase();
+
+    }
     const ext = getFileExtension(filename);
 
     // Check if the file extension is allowed.
@@ -61,39 +75,43 @@ document.addEventListener("DOMContentLoaded", function () {
       romfileInput.value = "";
       return;
     }
-
     try {
-      // Compute checksum from the first 1024 bytes
-      const checksum = await computeChecksum(file);
-      const ext = getFileExtension(filename);
-      storedFilename = `${checksum}.${ext}`;
+      if( type ==="file") {
+        // Compute checksum from the first 1024 bytes
+        const checksum = await computeChecksum(file);
+        const ext = getFileExtension(filename);
+        storedFilename = `${checksum}.${ext}`;
 
-      // Check if the ROM is already on the server
-      let response = await fetch("/check_rom", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ checksum, ext }),
-      });
-      let data = await response.json();
-      if (!data.exists) {
-        // Upload the file since it doesn't exist yet
-        const formData = new FormData();
-        formData.append("checksum", checksum);
-        formData.append("ext", ext);
-        formData.append("romfile", file);
-        response = await fetch("/upload_rom", {
+        // Check if the ROM is already on the server
+        let response = await fetch("/check_rom", {
           method: "POST",
-          body: formData,
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({checksum, ext}),
         });
-        data = await response.json();
-        if (!data.success) {
-          throw new Error(data.error || "File upload failed.");
+        let data = await response.json();
+        if (!data.exists) {
+          // Upload the file since it doesn't exist yet
+          const formData = new FormData();
+          formData.append("checksum", checksum);
+          formData.append("ext", ext);
+          formData.append("romfile", file);
+          response = await fetch("/upload_rom", {
+            method: "POST",
+            body: formData,
+          });
+          data = await response.json();
+          if (!data.success) {
+            throw new Error(data.error || "File upload failed.");
+          }
+          storedFilename = data.stored_filename;
+        } else {
+          storedFilename = data.stored_filename;
         }
-        storedFilename = data.stored_filename;
-      } else {
-        storedFilename = data.stored_filename;
+      } else{
+        storedFilename = file
       }
       document.getElementById("stored_filename").value = storedFilename;
+
 
       // Get game identification and available presets
       response = await fetch("/get_presets", {
