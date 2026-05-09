@@ -16,7 +16,6 @@ document.addEventListener("DOMContentLoaded", function () {
   // Compute SHA-256 checksum on the first `bytesToRead` bytes (default 1MB)
   async function computeChecksum(file, bytesToRead = 1048576) {
     return new Promise((resolve, reject) => {
-    return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = function (e) {
         const buffer = e.target.result;

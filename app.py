@@ -17,9 +17,9 @@ app = Flask(__name__, template_folder='web/templates', static_folder='web/static
 
 # Folders and paths
 UPLOAD_FOLDER = 'uploads'
-GBA_ROM_FOLDER = 'gba'
-NDS_ROM_FOLDER = 'gba'
-GBC_ROM_FOLDER = "gbc"
+GBA_ROM_FOLDER = '/gba'
+NDS_ROM_FOLDER = '/nds'
+GBC_ROM_FOLDER = "/gbc"
 PRESET_FOLDER = os.path.join('randomizer', 'presets')
 JAR_PATH = os.path.join('randomizer', 'PokeRandoZX.jar')
 if not os.path.exists(UPLOAD_FOLDER):
@@ -78,7 +78,7 @@ def identify_game(filepath):
             gbc_title = rom.read(16).decode('ascii', errors='ignore').strip()
     except Exception:
         app.logger.error(f"Error reading ROM file {filepath}")
-        return (None, None, None)
+        return None, None, None
     
     if "CRYSTAL" in gbc_title.upper():
         return GAME_PRESETS.get("CRYSTAL")
@@ -89,7 +89,7 @@ def identify_game(filepath):
         app.logger.info(f"Identified ROM with NDS code: {nds_code}")
         return GAME_PRESETS[nds_code]
     
-    return (None, None, None)
+    return None, None, None
 
 roms = []
 @app.route('/')
@@ -237,8 +237,10 @@ def download_file(filename):
 if __name__ == '__main__':
     for rom_path in [GBA_ROM_FOLDER,GBC_ROM_FOLDER,NDS_ROM_FOLDER]:
         if os.path.exists(rom_path):
-            for files in os.listdir(rom_path):
-                for x in files:
-                    if x.endswith(".gba") and identify_game(os.path.join(rom_path, x))[0] is not None:
+            app.logger.info(f"Found ROM Path: {rom_path}")
+            for x in os.listdir(rom_path):
+                if "pokemon" in x.lower() and (x.endswith(".gba") or x.endswith(".gb") or x.endswith(".nds")):
+                    if identify_game(os.path.join(rom_path, x))[0] is not None:
+                        app.logger.info(f"Identified ROM: {x}")
                         roms.append(os.path.join(rom_path, x))
     app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)), debug=False)
