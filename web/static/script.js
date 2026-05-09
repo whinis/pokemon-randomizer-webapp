@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Compute SHA-256 checksum on the first `bytesToRead` bytes (default 1MB)
   async function computeChecksum(file, bytesToRead = 1048576) {
     return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = function (e) {
         const buffer = e.target.result;
@@ -43,9 +44,8 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   const allowedExtensions = ["gba", "gbc", "nds"];
-
-  const romfileInput = document.getElementById("romfile");
-  romfileInput.addEventListener("change", async function (e) {
+  async function check_file(e)
+  {
     resetForm();
     const file = e.target.files[0];
     if (!file) return;
@@ -130,7 +130,11 @@ document.addEventListener("DOMContentLoaded", function () {
       console.error(err);
       document.getElementById("romfile").value = "";
     }
-  });
+  }
+  const romfileInput = document.getElementById("romfile");
+  romfileInput.addEventListener("change", check_file)
+    const romfileSelectInput = document.getElementById("romfileselect");
+  romfileSelectInput.addEventListener("change", check_file)
 
   const randomizerForm = document.getElementById("randomizer-form");
   randomizerForm.addEventListener("submit", async function (e) {

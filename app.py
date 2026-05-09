@@ -17,6 +17,9 @@ app = Flask(__name__, template_folder='web/templates', static_folder='web/static
 
 # Folders and paths
 UPLOAD_FOLDER = 'uploads'
+GBA_ROM_FOLDER = 'gba'
+NDS_ROM_FOLDER = 'gba'
+GBC_ROM_FOLDER = "gbc"
 PRESET_FOLDER = os.path.join('randomizer', 'presets')
 JAR_PATH = os.path.join('randomizer', 'PokeRandoZX.jar')
 if not os.path.exists(UPLOAD_FOLDER):
@@ -88,9 +91,10 @@ def identify_game(filepath):
     
     return (None, None, None)
 
+roms = []
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html',roms=roms)
 
 @app.route('/check_rom', methods=['POST'])
 def check_rom():
@@ -231,4 +235,10 @@ def download_file(filename):
     return send_file(file_data, as_attachment=True, download_name=filename)
 
 if __name__ == '__main__':
+    for rom_path in [GBA_ROM_FOLDER,GBC_ROM_FOLDER,NDS_ROM_FOLDER]:
+        if os.path.exists(rom_path):
+            for files in os.listdir(rom_path):
+                for x in files:
+                    if x.endswith(".gba") and identify_game(os.path.join(rom_path, x))[0] is not None:
+                        roms.append(os.path.join(rom_path, x))
     app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)), debug=False)

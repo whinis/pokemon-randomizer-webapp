@@ -20,8 +20,14 @@
         enctype="multipart/form-data"
       >
         <label for="romfile">Upload ROM:</label>
-        <input type="file" name="romfile" id="romfile" required />
+        <input type="file" name="romfile" id="romfile"/>
 
+        <label for="romfileselect">Select ROM:</label>
+        <select name="romfileselect" id="romfileselect">
+        {% for o in roms %}
+               <option name="{{ o }}">{{ o}}</option>
+        {% endfor %}
+        </select>
         <p id="detected-game" class="hidden">
           Detected Game: <span id="game-name"></span>
         </p>
